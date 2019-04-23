@@ -1,0 +1,8 @@
+body {
+    border: 2px dashed black;
+    padding: 20px;
+}
+header {
+    font-size: 500%;
+    text-align: center;
+}

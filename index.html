@@ -1,47 +1,86 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Train Schedule</title>
-        <!-- <link rel="images" href="assets/images/WaltDisneyTrainStation.jpg" -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="assets/css/style.css">
-    </head>
-    
-    <body>
-        <header>All aboard the Crazy Train!</header>
+<html lang="en">
 
-        <form>
-            <div class="form-group">
-              <label for="trainName">Train Name</label>
-              <input type="text" class="form-control" id="trainName"  placeholder="Train Name">
-            </div>
-            <div class="form-group">
-              <label for="destinationLocation">Destination</label>
-              <input type="text" class="form-control" id="destionationLocationName" placeholder="Destination">
-            </div>
-            <div class="form-group">
-                <label for="frequencyOfDeparture">Frequency</label>
-                <input type="text" class="form-control" id="frequency"  placeholder="Frequency Departure">
-            </div>
-            <div class="form-group">
-                <label for="nextArrivalTime">Next Arrival</label>
-                <input type="text" class="form-control" id="nextArrivalTime"  placeholder="Next Arrival Time">
-            </div>
-            <div class="form-group">
-                <label for="minutesAway">Minutes Away</label>
-                <input type="text" class="form-control" id="minutesAway"  placeholder="Minutes till departure">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Train Schedule</title>
+    <!-- <link rel="images" href="assets/images/WaltDisneyTrainStation.jpg" -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
 
+<body>
+    <header>All aboard the Crazy Train!</header>
 
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="assets/javascript/Schedule.js"></script>
+<!--Create table columns using bootstrap table -->
+    <div id="tableDiv">
+        <table class="table table-striped" id="trainTable">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Train Name</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Frequency (minutes)</th>
+                    <th scope="col">Next Arrival</th>
+                    <th scope="col">Minutes Away</th>
+                </tr>
+            </thead>
+<!--create rows for the table that will house the user input-->            
+            <tbody>
+                <tr>
+                    <th scope="row" id ="trainSchedule class="trainName"></th>
+                    <td class="destionationLocationName"></td>
+                    <td class="frequency"></td>
+                    <td class="nextArrivalTime"></td>
+                    <td class="minutesAway"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+<!-- create a form that will require user input-->    
+    <form>
+        <div class="form-group">
+            <label for="trainName">Train Name</label>
+            <input type="text" class="form-control" id="trainName-display" placeholder="Train Name">
+        </div>
+        <div class="form-group">
+            <label for="destinationLocation">Destination</label>
+            <input type="text" class="form-control" id="destination-display" placeholder="Destination">
+        </div>
+        <div class="form-group">
+            <label for="frequencyOfDeparture">Frequency (minutes)</label>
+            <input type="text" class="form-control" id="frequency-display" placeholder="Frequency Departure">
+        </div>
+        <div class="form-group">
+            <label for="nextArrivalTime">Next Arrival</label>
+            <input type="text" class="form-control" id="nextArrivalTime-display" placeholder="Next Arrival Time">
+        </div>
+        <!-- <div class="form-group">
+            <!--this section does not need to be stored but does need to be part of the table-->
+            <!-- <label for="minutesAway">Minutes Away</label>
+            <input type="text" class="form-control" id="minutesAway-display"  placeholder="Minutes till departure">
+        </div> -->
+        <button type="submit" class="btn btn-primary" id="trainInfoSubmit">Submit</button>
+    </form>
 
-    </body>
+    <!-- <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="assets/javascript/Schedule.js"></script>
+
+</body>
+
 </html>
