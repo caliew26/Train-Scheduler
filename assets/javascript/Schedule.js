@@ -69,30 +69,31 @@ database.ref().on("child_added", function(childSnapshot){
     // console.log(childsnapshot.val());
 
     //I want to add the values to the firebase database
-    // database.ref().on("child_added", function(childSnapshot) {
-    // Log everything that's coming out of snapshot
+    //Log everything that's coming out of snapshot
   
-    console.log(childSnapshot.val().trainName);
-    console.log(childSnapshot.val().destination);
-    console.log(childSnapshot.val().frequency);
-    console.log(childSnapshot.val().nextArrival);
+    // console.log(childSnapshot.val().trainName);
+    // console.log(childSnapshot.val().destination);
+    // console.log(childSnapshot.val().frequency);
+    // console.log(childSnapshot.val().nextArrival);
 
     //create variables based on the input from the user on the form
     var trainName = childSnapshot.val().trainName;
     var destination = childSnapshot.val().destination;
     var frequency = childSnapshot.val().frequency;
     var nextArrival = childSnapshot.val().nextArrival;
-
+    //I need to calculate the "Minutes Away" column ----CALI THINK ON THIS
+    var minutesAway = moment().fromNow();
   //create a new row from the input from the user
     var newRow = $("<tr>").append(
         $("<td>").text(trainName),
         $("<td>").text(destination),
         $("<td>").text(frequency),
         $("<td>").text(nextArrival),
+        $("<td>").text(moment(frequency.add(nextArrival)))
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
-    //want to add the values to the HTML page --- CALI THINK ON THIS
+    //want to add the values to the HTML page, got this to work, the elementID was initially written incorrectly (had #train-table).
 
 });
 
