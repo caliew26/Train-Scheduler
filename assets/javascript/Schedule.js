@@ -17,8 +17,9 @@ var database = firebase.database();
 //variables for the columns that I need, not sure I need any info in them because I want to be able to "reset" the fields
 var trainName = "",
     destination = "",
-    frequency = "",
-    nextArrival = "",
+    frequency = "",//in minutes (this is how often the train departs)
+    //input field
+    nextArrival = "",//military time HH:mm (this is when the train will depart)
     minutesAway = 0
 
 //getting the DOM loaded/rendered
@@ -26,17 +27,20 @@ $(document).ready(function() {
     initializeEventHandlers();
 });
 
-//need an onclick event - do I need to put this in initializeEventHandler() in the document.ready? this is the click of the submit button
-//create variables for the userinput from the form
+//submit button -- 
+    //will need to be disabled on initial page load
+    //once all field are populated then enable
+    //all fields are required prior to submit
+
 function initializeEventHandlers(){
     $("#trainInfoSubmit").click(function(){
         event.preventDefault();
         // console.log("I was clicked");
+        //create variables for the userinput from the form
         var trainName = $("#trainName-display").val().trim();
         var destination = $("#destination-display").val().trim();
         var frequency = $("#frequency-display").val().trim();
         var nextArrival = $("#nextArrivalTime-display").val()
-
 
         //this will push the values into firebase database
         database.ref().push({
@@ -48,10 +52,6 @@ function initializeEventHandlers(){
             nextArrival: nextArrival,
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
-        //console.log(trainName = $("#trainName-display").val().trim());
-        //console.log(frequency = $("#frequency-display").val().trim());
-        //console.log(destination = $("#destination-display").val().trim());
-        //console.log(nextArrival = $("#nextArrivalTime-display").val().trim());
 
         //clear the form so user can't create the same train
         $("#trainName-display").val("");
@@ -104,44 +104,15 @@ database.ref().on("child_added", function(childSnapshot){
     //add the new row just created onto the table
     $("#train-table > tbody").append(newRow);
     //want to add the values to the HTML page --- CALI THINK ON THIS
-    // $("#trainName-display").text(trainName).val().trim();
-    // $("#destination-display").text(destination).val().trim();
-    // $("#frequency-display").text(frequency).val().trim();
-    // $("#nextArrivalTime-display").text(nextArrival).val().trim();
 
 });
 
+//possible to log errors?
 // function(errorObject){
 //     console.log("Errors handled: " + errorObject.code);
 // };
 
-//?--First train time -- military time HH:mm (this is when the first train will depart)
-    //input field
 
-// frequency -- in minutes (this is how often the train departs)
-    //input field
-
-//next arrival -- will be total minutes
-    //input field
-    //update the arrival time in realtime (screen refreshes every 1 minute, if frequency is 30 minutes, next arrival is the actual arrival time (say at 545pm) that is how many minutes from "now" - that is the countdown)
-
-//submit button -- 
-    //will need to be disabled on initial page load
-    //once all field are populated then enable
-        //all fields are required prior to submit
-
-//display div
-    //columns
-        // train name
-        // destination
-        // frequency
-        // next arrival
-        // minutes away
-
-    //make all columns sortable
-
-// calculate when the train will arrive 
-    //this will be current time plus the frequency
 
 
 //POSSIBLE STRETCH GOALS:
@@ -154,6 +125,8 @@ database.ref().on("child_added", function(childSnapshot){
     //max number of characters is 25
     //input field
 
+//make all columns sortable
+
 //add update / remove buttons with functionality behind them
 
 //user login with google username/password or github username/password
@@ -165,4 +138,6 @@ database.ref().on("child_added", function(childSnapshot){
 // snd.play();
 // snd.currentTime=0
 
-//add disney railway style theme
+//next arrival -- will be total minutes
+    //input field
+    //update the arrival time in realtime (screen refreshes every 1 minute, if frequency is 30 minutes, next arrival is the actual arrival time (say at 545pm) that is how many minutes from "now" - that is the countdown)
