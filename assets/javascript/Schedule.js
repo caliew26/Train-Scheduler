@@ -91,7 +91,7 @@ database.ref().on("child_added", function(childSnapshot){
         $("<td>").text(nextArrival),
     );
     //add the new row just created onto the table
-    $("#train-table > tbody").append(newRow);
+    $("#trainTable > tbody").append(newRow);
     //want to add the values to the HTML page --- CALI THINK ON THIS
 
 });
@@ -104,7 +104,7 @@ database.ref().on("child_added", function(childSnapshot){
 
 //POSSIBLE STRETCH GOALS:
 //adding a train to the table
-    // Train name
+    //Train name
     //max number of characters is 50 (includes spaces but cannot be just spaces)
     //input field
 
