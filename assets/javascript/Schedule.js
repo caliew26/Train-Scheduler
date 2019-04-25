@@ -25,16 +25,19 @@ var trainName = "",
 //getting the DOM loaded/rendered
 $(document).ready(function() {
     initializeEventHandlers();
+    // $("#trainInfoSubmit").attr("disabled", true);
 });
 
 //submit button -- 
     //will need to be disabled on initial page load
     //once all field are populated then enable
     //all fields are required prior to submit
-
 function initializeEventHandlers(){
+    //will need an keyup event listener that will set the button to active when data is input from user
+
     $("#trainInfoSubmit").click(function(){
         event.preventDefault();
+        // $("#trainInfoSubmit").attr("disabled", false);
         // console.log("I was clicked");
         //create variables for the userinput from the form
         var trainName = $("#trainName-display").val().trim();
@@ -58,23 +61,9 @@ function initializeEventHandlers(){
         $("#frequency-display").val("");
         $("#destination-display").val("");
         $("#nextArrivalTime-display").val("");
+        // $("#trainInfoSubmit").attr("disabled", true);
     });
 };
-
-//I want to add functionality that will not allow the fields to be blank and the button to be submitted, need all values to activate button
-//going to work on this as a "stretch" goal after all functionality is done
-// function newButtonValid(trainStation){
-//     if (trainStation != ""){
-//         alert("please provide all fields")
-//     } else {
-//         alert("all aboard")
-//     }
-// }
-// var table = $("#trainTable");
-// var row = $("#trainSchedule");
-//     for (let i = 0; i < row.length; i++) {
-//        console.log(table); 
-// }
 
 database.ref().on("child_added", function(childSnapshot){
     // console.log(childsnapshot.val());
@@ -113,8 +102,6 @@ database.ref().on("child_added", function(childSnapshot){
 // };
 
 
-
-
 //POSSIBLE STRETCH GOALS:
 //adding a train to the table
     // Train name
@@ -141,3 +128,16 @@ database.ref().on("child_added", function(childSnapshot){
 //next arrival -- will be total minutes
     //input field
     //update the arrival time in realtime (screen refreshes every 1 minute, if frequency is 30 minutes, next arrival is the actual arrival time (say at 545pm) that is how many minutes from "now" - that is the countdown)
+//I want to add functionality that will not allow the fields to be blank and the button to be submitted, need all values to activate button
+// function newButtonValid(trainStation){
+//     if (trainStation != ""){
+//         alert("please provide all fields")
+//     } else {
+//         alert("all aboard")
+//     }
+// }
+// var table = $("#trainTable");
+// var row = $("#trainSchedule");
+//     for (let i = 0; i < row.length; i++) {
+//        console.log(table); 
+// }
