@@ -19,7 +19,7 @@ var trainName = "", ////max number of characters is 35 (includes spaces but cann
     destination = "", //max number of characters is 25
     frequency = "",//in minutes (this is how often the train departs)
     //input field
-    firstDeparture = "",//military time HH:mm (this is when the train will depart)
+    nextDeparture = "",//military time HH:mm (this is when the train will depart)
     minutesAway = 0
 
 //getting the DOM loaded/rendered
@@ -43,16 +43,16 @@ function initializeEventHandlers(){
         var trainName = $("#trainName-display").val().trim();
         var destination = $("#destination-display").val().trim();
         var frequency = $("#frequency-display").val().trim();
-        var firstDeparture = $("#nextArrivalTime-display").val()
+        var nextDeparture = $("#nextDepartureTime-display").val()
 
         //this will push the values into firebase database
         database.ref().push({
             //temp object to hold traininfosubmit input data from user
-            // var trainStation = {
+            //var trainStation = {
             trainName: trainName,
             destination: destination,
             frequency: frequency,
-            firstDeparture: firstDeparture,
+            nextDeparture: nextDeparture,
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
 
@@ -60,7 +60,7 @@ function initializeEventHandlers(){
         $("#trainName-display").val("");
         $("#frequency-display").val("");
         $("#destination-display").val("");
-        $("#nextArrivalTime-display").val("");
+        $("#nextDepartureTime-display").val("");
         // $("#trainInfoSubmit").attr("disabled", true);
     });
 };
@@ -72,40 +72,40 @@ database.ref().on("child_added", function(childSnapshot){
     console.log(childSnapshot.val().trainName);
     console.log(childSnapshot.val().destination);
     console.log(childSnapshot.val().frequency);
-    console.log(childSnapshot.val().firstDeparture);
+    console.log(childSnapshot.val().nextDeparture);
 
     //create variables based on the input from the user on the form
     var trainName = childSnapshot.val().trainName;
     var destination = childSnapshot.val().destination;
     var frequency = childSnapshot.val().frequency;
-    var firstDeparture = childSnapshot.val().firstDeparture;
+    var nextDeparture = childSnapshot.val().nextDeparture;
 
     
-    //first train time leaves at 8am and trains depart every "frequency" (15min)  amount of time ------- CALI THINK ON THIS
+    //first train time leaves at 8am and trains depart every "frequency" (15min) update the departure time in realtime, a train that is leaving next; as long as the minutes to departure are positive it will be the "next" departure; onde the minutes to departure are less than 0, the next departure time will have the frequency added to it.  ------- CALI THINK ON THIS
 
-    var nextDepartureMoment = new moment(firstDeparture, "HHmm");
+    var nextDepartureMoment = new moment(nextDeparture, "HHmm");
     var currentMoment = new moment();
     var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
-
     var minutesAway = parseInt(duration.asMinutes());
-    console.log(minutesAway);
-    console.log(minutesAway + 10);
-    
+    // console.log(minutesAway);
+    // console.log(minutesAway + 10);
+
+    //looking to create a while loop that will take the minutesAway and countup until the minutes are no longer negative; train leaves 20 minutes ago and leaves every 15 minutes, then it's still already gone
     while (minutesAway < 0){
-        console.log(" before adding frequency");
-        console.log(minutesAway);
+        // console.log(" before adding frequency");
+        // console.log(minutesAway);
         // minutesAway += frequency//do this
         minutesAway = minutesAway + parseInt(frequency);
         console.log(minutesAway);
     }
-    //looking to create a while loop that will take the minutesAway and countup until the minutes are no longer negative; train leaves 20 minutes ago and leaves every 15 minutes, then it's still already gone
-  // returns duration object with the duration between x and y
+
+
   //create a new row from the input from the user
     var newRow = $("<tr>").append(
         $("<td>").text(trainName),
         $("<td>").text(destination),
         $("<td>").text(frequency),
-        $("<td>").text(firstDeparture),
+        $("<td>").text(nextDeparture),
         $("<td>").text(minutesAway),
     );
     //add the new row just created onto the table
@@ -113,6 +113,8 @@ database.ref().on("child_added", function(childSnapshot){
     //want to add the values to the HTML page, got this to work, the elementID was initially written incorrectly (had #train-table).
 
 });
+
+
 
 //possible to log errors?
 // function(errorObject){
