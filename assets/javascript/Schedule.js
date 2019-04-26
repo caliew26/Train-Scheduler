@@ -19,7 +19,7 @@ var trainName = "", ////max number of characters is 35 (includes spaces but cann
     destination = "", //max number of characters is 25
     frequency = "",//in minutes (this is how often the train departs)
     //input field
-    nextArrival = "",//military time HH:mm (this is when the train will depart)
+    firstDeparture = "",//military time HH:mm (this is when the train will depart)
     minutesAway = 0
 
 //getting the DOM loaded/rendered
@@ -43,7 +43,7 @@ function initializeEventHandlers(){
         var trainName = $("#trainName-display").val().trim();
         var destination = $("#destination-display").val().trim();
         var frequency = $("#frequency-display").val().trim();
-        var nextArrival = $("#nextArrivalTime-display").val()
+        var firstDeparture = $("#nextArrivalTime-display").val()
 
         //this will push the values into firebase database
         database.ref().push({
@@ -52,7 +52,7 @@ function initializeEventHandlers(){
             trainName: trainName,
             destination: destination,
             frequency: frequency,
-            nextArrival: nextArrival,
+            firstDeparture: firstDeparture,
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
 
@@ -67,27 +67,46 @@ function initializeEventHandlers(){
 
 database.ref().on("child_added", function(childSnapshot){
     // console.log(childsnapshot.val());
-    //I want to add the values to the firebase database
+    //I want to get the values from the firebase database only when new "child" is added (from the userinput form)
     //Log everything that's coming out of snapshot
     console.log(childSnapshot.val().trainName);
     console.log(childSnapshot.val().destination);
     console.log(childSnapshot.val().frequency);
-    console.log(childSnapshot.val().nextArrival);
+    console.log(childSnapshot.val().firstDeparture);
 
     //create variables based on the input from the user on the form
     var trainName = childSnapshot.val().trainName;
     var destination = childSnapshot.val().destination;
     var frequency = childSnapshot.val().frequency;
-    var nextArrival = childSnapshot.val().nextArrival;
-    //I need to calculate the "Minutes Away" column ----CALI THINK ON THIS
-    var minutesAway = moment().fromNow();
+    var firstDeparture = childSnapshot.val().firstDeparture;
+
+    
+    //first train time leaves at 8am and trains depart every "frequency" (15min)  amount of time ------- CALI THINK ON THIS
+
+    var nextDepartureMoment = new moment(firstDeparture, "HHmm");
+    var currentMoment = new moment();
+    var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
+
+    var minutesAway = parseInt(duration.asMinutes());
+    console.log(minutesAway);
+    console.log(minutesAway + 10);
+    
+    while (minutesAway < 0){
+        console.log(" before adding frequency");
+        console.log(minutesAway);
+        // minutesAway += frequency//do this
+        minutesAway = minutesAway + parseInt(frequency);
+        console.log(minutesAway);
+    }
+    //looking to create a while loop that will take the minutesAway and countup until the minutes are no longer negative; train leaves 20 minutes ago and leaves every 15 minutes, then it's still already gone
+  // returns duration object with the duration between x and y
   //create a new row from the input from the user
     var newRow = $("<tr>").append(
         $("<td>").text(trainName),
         $("<td>").text(destination),
         $("<td>").text(frequency),
-        $("<td>").text(nextArrival),
-        // $("<td>").text(moment(frequency.add(nextArrival)))
+        $("<td>").text(firstDeparture),
+        $("<td>").text(minutesAway),
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
@@ -100,6 +119,8 @@ database.ref().on("child_added", function(childSnapshot){
 //     console.log("Errors handled: " + errorObject.code);
 // };
 
+
+//look at the script tags they are a mess and I don't understand
 
 //POSSIBLE STRETCH GOALS:
 

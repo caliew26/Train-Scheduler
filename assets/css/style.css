@@ -10,3 +10,8 @@ header {
 #addTrainInfo {
     border: 2px solid yellow;
 }
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    opacity: 0.5; /* Firefox */
+    color: pink;
+  }
