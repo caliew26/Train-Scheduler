@@ -19,6 +19,9 @@
     <!--Create table columns using bootstrap table -->
 
     <div id="tableDiv">
+        <div>
+            <h3>Current Train Schedule</h3>
+        </div>
         <table class="table table-striped" id="trainTable">
             <thead class="thead-light">
                 <tr>
@@ -27,8 +30,7 @@
                     <th scope="col">Frequency (minutes)</th>
                     <th scope="col">Next Departure</th>
                     <th scope="col">Minutes Away</th>
-                    <!-- <th scope="col">Update Info</th>
-                    <th scope="col">Delete</th> -->
+                    <!-- <th scope="col">Delete</th> -->
                 </tr>
             </thead>
 <!--create rows for the table that will house the user input-->            
@@ -37,24 +39,27 @@
         </table>
     </div>
 <!-- create a form that will require user input-->    
-    <form id="addTrainInfo">
-        <div class="form-group">
-            <label for="trainName">Train Name</label>
-            <input type="text" maxlength="35" class="form-control" id="trainName-display" placeholder="Train Name">
+    <form id="addTrainInfo container-fluid">
+        <div class="form-group" id="addTrainInfo">
+            <h3>Add Train Info</h3>
+            <div class="form-group">
+                <label for="trainName">Train Name</label>
+                <input type="text" maxlength="35" class="form-control" id="trainName-display" placeholder="Train Name">
+            </div>
+            <div class="form-group">
+                <label for="destinationLocation">Destination</label>
+                <input type="text" maxlength="25" class="form-control" id="destination-display" placeholder="Destination">
+            </div>
+            <div class="form-group">
+                <label for="frequencyOfDeparture">Frequency (minutes)</label>
+                <input type="text" maxlength="3" class="form-control" id="frequency-display" placeholder="Frequency Departure">
+            </div>
+            <div class="form-group">
+                <label for="nextDepartureTime">Next Departure</label>
+                <input type="text" maxlength="10" class="form-control" id="nextDepartureTime-display" placeholder="Next Departure Time">
+            </div>
+            <button type="submit" class="btn btn-primary" id="trainInfoSubmit">Submit</button>
         </div>
-        <div class="form-group">
-            <label for="destinationLocation">Destination</label>
-            <input type="text" maxlength="25" class="form-control" id="destination-display" placeholder="Destination">
-        </div>
-        <div class="form-group">
-            <label for="frequencyOfDeparture">Frequency (minutes)</label>
-            <input type="text" maxlength="3" class="form-control" id="frequency-display" placeholder="Frequency Departure">
-        </div>
-        <div class="form-group">
-            <label for="nextDepartureTime">Next Departure</label>
-            <input type="text" maxlength="10" class="form-control" id="nextDepartureTime-display" placeholder="Next Departure Time">
-        </div>
-        <button type="submit" class="btn btn-primary" id="trainInfoSubmit">Submit</button>
     </form>
 
     <!-- <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script> -->

@@ -7,11 +7,19 @@ header {
     text-align: center;
 }
 
-#addTrainInfo {
-    border: 2px solid yellow;
+h3 {
+    border: 2px solid black;
+    background-color: bisque
 }
 
-::placeholder {
-    opacity: 1;
-    color: pink;
-  }
+#tableDiv {
+    border: 2px solid brown;
+    margin-top: 5%;
+    padding: 2%;
+}
+
+#addTrainInfo {
+    border: 2px solid brown;
+    margin-top: 5%;
+    padding: 2%;
+}

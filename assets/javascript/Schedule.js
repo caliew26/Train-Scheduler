@@ -20,7 +20,7 @@ var trainName = "", ////max number of characters is 35 (includes spaces but cann
     frequency = "",//in minutes (this is how often the train departs)
     //input field
     nextDeparture = "",//military time HH:mm (this is when the train will depart)
-    minutesAway = 0
+    minutesAway = ""
 
 //getting the DOM loaded/rendered
 $(document).ready(function() {
@@ -66,8 +66,8 @@ function initializeEventHandlers(){
 };
 
 database.ref().on("child_added", function(childSnapshot){
-    // console.log(childsnapshot.val());
-    //I want to get the values from the firebase database only when new "child" is added (from the userinput form)
+    //console.log(childsnapshot.val());
+    //get the values from the firebase database only when new "child" is added (from the userinput form)
     //Log everything that's coming out of snapshot
     console.log(childSnapshot.val().trainName);
     console.log(childSnapshot.val().destination);
@@ -79,26 +79,9 @@ database.ref().on("child_added", function(childSnapshot){
     var destination = childSnapshot.val().destination;
     var frequency = childSnapshot.val().frequency;
     var nextDeparture = childSnapshot.val().nextDeparture;
-
-    
-    //first train time leaves at 8am and trains depart every "frequency" (15min) update the departure time in realtime, a train that is leaving next; as long as the minutes to departure are positive it will be the "next" departure; onde the minutes to departure are less than 0, the next departure time will have the frequency added to it.  ------- CALI THINK ON THIS
-
-    var nextDepartureMoment = new moment(nextDeparture, "HHmm");
-    var currentMoment = new moment();
-    var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
-    var minutesAway = parseInt(duration.asMinutes());
-    // console.log(minutesAway);
-    // console.log(minutesAway + 10);
-
-    //looking to create a while loop that will take the minutesAway and countup until the minutes are no longer negative; train leaves 20 minutes ago and leaves every 15 minutes, then it's still already gone
-    while (minutesAway < 0){
-        // console.log(" before adding frequency");
-        // console.log(minutesAway);
-        // minutesAway += frequency//do this
-        minutesAway = minutesAway + parseInt(frequency);
-        console.log(minutesAway);
-    }
-
+    // var minutesAway = ;
+    //LOST COUNTDOWN OF MINUTESAWAY within the column --- CALI THINK ON THIS FIRST
+    //going to need to update the Next Departure column with nextDeparture + frequency and based on current time.  The train leaves at 8am and trains depart every "frequency" (x min), update the departure time in realtime, a train that is leaving next; as long as the minutes to departure are positive it will be the "next" departure; when the minutes to departure are less than 0, the next departure time will have the frequency added to it.  ------- CALI THINK ON THIS NEXT
 
   //create a new row from the input from the user
     var newRow = $("<tr>").append(
@@ -110,12 +93,27 @@ database.ref().on("child_added", function(childSnapshot){
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
-    //want to add the values to the HTML page, got this to work, the elementID was initially written incorrectly (had #train-table).
-
 });
 
+function newMinutes(a){
+    var nextDepartureMoment = new moment(nextDeparture, "HHmm");
+    var currentMoment = new moment();
+    var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
+    var minutesAway = parseInt(duration.asMinutes());
+    //create a while loop that will take the minutesAway and countup until the minutes are no longer negative
+    while (minutesAway < 0){
+    // console.log(minutesAway);
+    // minutesAway += frequency//another way of writing the next line
+    minutesAway = minutesAway + parseInt(frequency);
+    console.log(minutesAway);
+    }
+};
 
-
+function resetTimer(){
+    timerCountdown = RESET_TIMER_COUNTDOWN;
+    updateTimeRemaining(timerCountdown);
+    countdownRunner = setInterval(countdown, ONE_SECOND);
+};
 //possible to log errors?
 // function(errorObject){
 //     console.log("Errors handled: " + errorObject.code);
