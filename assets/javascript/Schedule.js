@@ -15,8 +15,8 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 //variables for the columns that I need, not sure I need any info in them because I want to be able to "reset" the fields
-var trainName = "",
-    destination = "",
+var trainName = "", ////max number of characters is 35 (includes spaces but cannot be just spaces)
+    destination = "", //max number of characters is 25
     frequency = "",//in minutes (this is how often the train departs)
     //input field
     nextArrival = "",//military time HH:mm (this is when the train will depart)
@@ -67,14 +67,12 @@ function initializeEventHandlers(){
 
 database.ref().on("child_added", function(childSnapshot){
     // console.log(childsnapshot.val());
-
     //I want to add the values to the firebase database
     //Log everything that's coming out of snapshot
-  
-    // console.log(childSnapshot.val().trainName);
-    // console.log(childSnapshot.val().destination);
-    // console.log(childSnapshot.val().frequency);
-    // console.log(childSnapshot.val().nextArrival);
+    console.log(childSnapshot.val().trainName);
+    console.log(childSnapshot.val().destination);
+    console.log(childSnapshot.val().frequency);
+    console.log(childSnapshot.val().nextArrival);
 
     //create variables based on the input from the user on the form
     var trainName = childSnapshot.val().trainName;
@@ -89,7 +87,7 @@ database.ref().on("child_added", function(childSnapshot){
         $("<td>").text(destination),
         $("<td>").text(frequency),
         $("<td>").text(nextArrival),
-        $("<td>").text(moment(frequency.add(nextArrival)))
+        // $("<td>").text(moment(frequency.add(nextArrival)))
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
@@ -104,14 +102,6 @@ database.ref().on("child_added", function(childSnapshot){
 
 
 //POSSIBLE STRETCH GOALS:
-//adding a train to the table
-    //Train name
-    //max number of characters is 50 (includes spaces but cannot be just spaces)
-    //input field
-
-//destination
-    //max number of characters is 25
-    //input field
 
 //make all columns sortable
 

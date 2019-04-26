@@ -27,7 +27,8 @@
                     <th scope="col">Frequency (minutes)</th>
                     <th scope="col">Next Arrival</th>
                     <th scope="col">Minutes Away</th>
-                    <!--calculate when the train will arrive,this will be current time plus the frequency-->
+                    <!-- <th scope="col">Update Info</th>
+                    <th scope="col">Delete</th> -->
                 </tr>
             </thead>
 <!--create rows for the table that will house the user input-->            
@@ -39,19 +40,19 @@
     <form id="addTrainInfo">
         <div class="form-group">
             <label for="trainName">Train Name</label>
-            <input type="text" class="form-control" id="trainName-display" placeholder="Train Name">
+            <input type="text" maxlength="35" class="form-control" id="trainName-display" placeholder="Train Name">
         </div>
         <div class="form-group">
             <label for="destinationLocation">Destination</label>
-            <input type="text" class="form-control" id="destination-display" placeholder="Destination">
+            <input type="text" maxlength="25" class="form-control" id="destination-display" placeholder="Destination">
         </div>
         <div class="form-group">
             <label for="frequencyOfDeparture">Frequency (minutes)</label>
-            <input type="text" class="form-control" id="frequency-display" placeholder="Frequency Departure">
+            <input type="text" maxlength="3" class="form-control" id="frequency-display" placeholder="Frequency Departure">
         </div>
         <div class="form-group">
             <label for="nextArrivalTime">Next Arrival</label>
-            <input type="text" class="form-control" id="nextArrivalTime-display" placeholder="Next Arrival Time">
+            <input type="text" maxlength="10" class="form-control" id="nextArrivalTime-display" placeholder="Next Arrival Time">
         </div>
         <button type="submit" class="btn btn-primary" id="trainInfoSubmit">Submit</button>
     </form>
