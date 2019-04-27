@@ -1,6 +1,9 @@
 body {
-    border: 2px dashed black;
+    /* border: 2px dashed black; */
     padding: 20px;
+    background-image: url("../images/train-track-illustration-clip-art-cartoon-82368010.jpg");
+    background-repeat: repeat-x;
+    background-color: whitesmoke;
 }
 header {
     font-size: 500%;
@@ -9,17 +12,20 @@ header {
 
 h3 {
     border: 2px solid black;
-    background-color: bisque
+    background-color: cornflowerblue;
 }
 
 #tableDiv {
-    border: 2px solid brown;
+    border: 2px solid grey;
     margin-top: 5%;
     padding: 2%;
+    background-color: whitesmoke;
 }
 
 #addTrainInfo {
-    border: 2px solid brown;
+    border: 2px solid grey;
     margin-top: 5%;
     padding: 2%;
+    background-color: whitesmoke;
 }
+
