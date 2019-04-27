@@ -79,7 +79,7 @@ database.ref().on("child_added", function(childSnapshot){
     var destination = childSnapshot.val().destination;
     var frequency = childSnapshot.val().frequency;
     var nextDeparture = childSnapshot.val().nextDeparture;
-    // var minutesAway = ;
+    var minutesAway = newMinutes(minutesAway);
     //LOST COUNTDOWN OF MINUTESAWAY within the column --- CALI THINK ON THIS FIRST
     //going to need to update the Next Departure column with nextDeparture + frequency and based on current time.  The train leaves at 8am and trains depart every "frequency" (x min), update the departure time in realtime, a train that is leaving next; as long as the minutes to departure are positive it will be the "next" departure; when the minutes to departure are less than 0, the next departure time will have the frequency added to it.  ------- CALI THINK ON THIS NEXT
 
@@ -95,7 +95,7 @@ database.ref().on("child_added", function(childSnapshot){
     $("#trainTable > tbody").append(newRow);
 });
 
-function newMinutes(a){
+function newMinutes(minutesAway){
     var nextDepartureMoment = new moment(nextDeparture, "HHmm");
     var currentMoment = new moment();
     var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
