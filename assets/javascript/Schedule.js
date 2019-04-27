@@ -11,44 +11,38 @@ var config = {
 firebase.initializeApp(config);
 
 //setting my variables
-//variable that is for specifically the firebase
+//variable that is specifically for the firebase database
 var database = firebase.database();
 
-//variables for the columns that I need, not sure I need any info in them because I want to be able to "reset" the fields
-var trainName = "", ////max number of characters is 35 (includes spaces but cannot be just spaces)
-    destination = "", //max number of characters is 25
+//variables for the columns that I need
+var trainName = "",
+    destination = "",
     frequency = "",//in minutes (this is how often the train departs)
-    //input field
-    nextDeparture = ""//military time HH:mm (this is when the train will depart)
-    // minutesAway = ""
+    nextDeparture = "",//military time HHmm (this is when the train will depart)
+    minutesAway = ""
 
 //getting the DOM loaded/rendered
 $(document).ready(function() {
+    // $("#trainInfoSubmit").attr("disabled", true)
    // initializeEventHandlers();
-    // $("#trainInfoSubmit").attr("disabled", true);
 //});
-
-//submit button -- 
-    //will need to be disabled on initial page load
-    //once all field are populated then enable
-    //all fields are required prior to submit
-//function initializeEventHandlers(){
-    //will need an keyup event listener that will set the button to active when data is input from user
-
+    //submit button -- 
+        //will need to be disabled on initial page load
+        //once all field are populated then enable submit
+        //function initializeEventHandlers(){
+        //will need an keyup event listener that will set the button to active when data is input from user
     $("#trainInfoSubmit").click(function(){
         event.preventDefault();
         // $("#trainInfoSubmit").attr("disabled", false);
-        // console.log("I was clicked");
         //create variables for the userinput from the form
         var trainName = $("#trainName-display").val().trim();
         var destination = $("#destination-display").val().trim();
         var frequency = $("#frequency-display").val().trim();
         var nextDeparture = $("#nextDepartureTime-display").val()
 
+
         //this will push the values into firebase database
         database.ref().push({
-            //temp object to hold traininfosubmit input data from user
-            //var trainStation = {
             trainName: trainName,
             destination: destination,
             frequency: frequency,
@@ -56,13 +50,14 @@ $(document).ready(function() {
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
 
-
-        //clear the form so user can't create the same train
+        //clear the form so user can't create the same train over and over
+        //NEED TO DISABLE BUTTON SO USER CAN'T UPLOAD A BLANK TRAIN
         $("#trainName-display").val("");
         $("#frequency-display").val("");
         $("#destination-display").val("");
         $("#nextDepartureTime-display").val("");
         // $("#trainInfoSubmit").attr("disabled", true);
+       
     });
 });
 
@@ -80,72 +75,54 @@ database.ref().on("child_added", function(childSnapshot){
     var destination = childSnapshot.val().destination;
     var frequency = parseInt(childSnapshot.val().frequency);
     var nextDeparture = childSnapshot.val().nextDeparture;
-    
+    // var minutesAway = newMinutes(minutesAway);
 
-    //LOST COUNTDOWN OF MINUTESAWAY within the column --- CALI THINK ON THIS FIRST
-    //going to need to update the Next Departure column with nextDeparture + frequency and based on current time.  The train leaves at 8am and trains depart every "frequency" (x min), update the departure time in realtime, a train that is leaving next; as long as the minutes to departure are positive it will be the "next" departure; when the minutes to departure are less than 0, the next departure time will have the frequency added to it.  ------- CALI THINK ON THIS NEXT
-
-  //create a new row from the input from the user
-    var newRow = $("<tr>").append(
-        $("<td>").text(trainName),
-        $("<td>").text(destination),
-        $("<td>").text(frequency),
-        $("<td>").text(nextDeparture),
-        $("<td>").text(minutesAway),
-    );
-    
-    //add the new row just created onto the table
-    $("#trainTable > tbody").append(newRow);
-    var nextDepartureMoment = moment.unix(nextDeparture);
-    var diff = moment().diff(moment(nextDepartureMoment, 'HH:mm'), 'minutes')
-
-    if(diff >= 0){
-
-        var minutesAway = frequency - diff % frequency
-        var next = moment().add(minutesAway, 'minutes').format('hh:mm A')
-        console.log('nim', next)
-    } else {
-        minutesAway = nextDepartureMoment.format('HH:mm A')
-        next = Math.abs(diff)
-        console.log(next)
-    }
-
-        
-
-    //var nextDepartureMoment = new moment(parseInt(nextDeparture), "HHmm");
+    var firstDepartureMoment = new moment((nextDeparture), "HHmm");
     var currentMoment = new moment();
-    var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
+    var duration = moment.duration(firstDepartureMoment.diff(currentMoment));
+    console.log(firstDepartureMoment);
     var minutesAway = parseInt(duration.asMinutes());
-    minutesAway = minutesAway + parseInt(frequency);
-    //console.log(minutesAway);
-
-    //newMinutes(minutesAway)
-});
-
-function newMinutes(minutesAway){
-    var nextDepartureMoment = new moment(parseInt(nextDeparture), "HHmm");
-    var currentMoment = new moment();
-    var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
-    var minutesAway = parseInt(duration.asMinutes());
+    console.log("above");
+    console.log(minutesAway);
     //create a while loop that will take the minutesAway and countup until the minutes are no longer negative
     while (minutesAway < 0){
-        // console.log(minutesAway);
+        firstDepartureMoment.add(parseInt(frequency), 'm');
         // minutesAway += frequency//another way of writing the next line
         minutesAway = minutesAway + parseInt(frequency);
         console.log(minutesAway);
-    }
-};
+    };
 
-// function resetTimer(){
-//     timerCountdown = RESET_TIMER_COUNTDOWN;
-//     updateTimeRemaining(timerCountdown);
-//     countdownRunner = setInterval(countdown, ONE_SECOND);
-// };
+     //create a new row from the input from the user
+     var newRow = $("<tr>").append(
+        $("<td>").text(trainName),
+        $("<td>").text(destination),
+        $("<td>").text(frequency),
+        $("<td>").text(firstDepartureMoment.format("HH:mm")),
+        $("<td>").text(minutesAway),
+    );
+    //add the new row just created onto the table
+    $("#trainTable > tbody").append(newRow);
+});
+
+
 //possible to log errors?
 // function(errorObject){
 //     console.log("Errors handled: " + errorObject.code);
 // };
 
+    //DR HELP
+    // var nextDepartureMoment = moment.unix(nextDeparture);
+    // var diff = moment().diff(moment(nextDepartureMoment, 'HH:mm'), 'minutes')
+
+    // if(diff >= 0){
+    //     var minutesAway = frequency - diff % frequency
+    //     var next = moment().add(minutesAway, 'minutes').format('hh:mm A')
+    //     console.log('nim', next)
+    // } else {
+    //     minutesAway = nextDepartureMoment.format('HH:mm A')
+    //     next = Math.abs(diff)
+    //     console.log(next)
+    // }
 
 //look at the script tags they are a mess and I don't understand
 
@@ -180,3 +157,10 @@ function newMinutes(minutesAway){
 //     for (let i = 0; i < row.length; i++) {
 //        console.log(table); 
 // }
+
+// if ($("#trainName-display") != "" && $("#destination-display") != "" && $("#frequency-display" != "") && $("#nextDepartureTime-display" != "")) {
+//     $("#trainInfoSubmit").attr("disabled", true);
+// } else {
+//     $("#trainInfoSubmit").attr("disabled", false);
+// }    
+//going to need to update the Next Departure column with nextDeparture + frequency and based off of current time.  The train leaves at 8am and trains depart every "frequency" (x min), update the departure time in realtime, a train that is leaving next; as long as the minutes to departure are positive it will be the "next" departure; when the minutes to departure are less than 0, the next departure time will have the frequency added to it.  ------- CALI THINK ON THIS NEXT

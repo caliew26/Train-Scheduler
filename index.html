@@ -51,19 +51,19 @@
             <h3>Add Train Info</h3>
             <div class="form-group">
                 <label for="trainName">Train Name</label>
-                <input type="text" maxlength="35" class="form-control" id="trainName-display" placeholder="Train Name">
+                <input type="text" maxlength="35" class="form-control" id="trainName-display" placeholder="Train Name" required/>
             </div>
             <div class="form-group">
                 <label for="destinationLocation">Destination</label>
-                <input type="text" maxlength="25" class="form-control" id="destination-display" placeholder="Destination">
+                <input type="text" maxlength="25" class="form-control" id="destination-display" placeholder="Destination" required/>
             </div>
             <div class="form-group">
                 <label for="frequencyOfDeparture">Frequency (minutes)</label>
-                <input type="text" maxlength="3" class="form-control" id="frequency-display" placeholder="Frequency Departure">
+                <input type="text" maxlength="3" class="form-control" id="frequency-display" placeholder="Frequency Departure" required/>
             </div>
             <div class="form-group">
                 <label for="nextDepartureTime">Next Departure</label>
-                <input type="text" maxlength="10" class="form-control" id="nextDepartureTime-display" placeholder="Next Departure Time">
+                <input type="text" maxlength="10" class="form-control" id="nextDepartureTime-display" placeholder="Next Departure Time in 4 digit military value" required/>
             </div>
             <button type="submit" class="btn btn-primary" id="trainInfoSubmit">Submit</button>
         </div>
