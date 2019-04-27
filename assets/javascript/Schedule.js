@@ -19,20 +19,20 @@ var trainName = "", ////max number of characters is 35 (includes spaces but cann
     destination = "", //max number of characters is 25
     frequency = "",//in minutes (this is how often the train departs)
     //input field
-    nextDeparture = "",//military time HH:mm (this is when the train will depart)
-    minutesAway = ""
+    nextDeparture = ""//military time HH:mm (this is when the train will depart)
+    // minutesAway = ""
 
 //getting the DOM loaded/rendered
 $(document).ready(function() {
-    initializeEventHandlers();
+   // initializeEventHandlers();
     // $("#trainInfoSubmit").attr("disabled", true);
-});
+//});
 
 //submit button -- 
     //will need to be disabled on initial page load
     //once all field are populated then enable
     //all fields are required prior to submit
-function initializeEventHandlers(){
+//function initializeEventHandlers(){
     //will need an keyup event listener that will set the button to active when data is input from user
 
     $("#trainInfoSubmit").click(function(){
@@ -56,6 +56,7 @@ function initializeEventHandlers(){
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
 
+
         //clear the form so user can't create the same train
         $("#trainName-display").val("");
         $("#frequency-display").val("");
@@ -63,7 +64,7 @@ function initializeEventHandlers(){
         $("#nextDepartureTime-display").val("");
         // $("#trainInfoSubmit").attr("disabled", true);
     });
-};
+});
 
 database.ref().on("child_added", function(childSnapshot){
     //console.log(childsnapshot.val());
@@ -77,9 +78,10 @@ database.ref().on("child_added", function(childSnapshot){
     //create variables based on the input from the user on the form
     var trainName = childSnapshot.val().trainName;
     var destination = childSnapshot.val().destination;
-    var frequency = childSnapshot.val().frequency;
+    var frequency = parseInt(childSnapshot.val().frequency);
     var nextDeparture = childSnapshot.val().nextDeparture;
-    var minutesAway = newMinutes(minutesAway);
+    
+
     //LOST COUNTDOWN OF MINUTESAWAY within the column --- CALI THINK ON THIS FIRST
     //going to need to update the Next Departure column with nextDeparture + frequency and based on current time.  The train leaves at 8am and trains depart every "frequency" (x min), update the departure time in realtime, a train that is leaving next; as long as the minutes to departure are positive it will be the "next" departure; when the minutes to departure are less than 0, the next departure time will have the frequency added to it.  ------- CALI THINK ON THIS NEXT
 
@@ -91,29 +93,54 @@ database.ref().on("child_added", function(childSnapshot){
         $("<td>").text(nextDeparture),
         $("<td>").text(minutesAway),
     );
+    
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
+    var nextDepartureMoment = moment.unix(nextDeparture);
+    var diff = moment().diff(moment(nextDepartureMoment, 'HH:mm'), 'minutes')
+
+    if(diff >= 0){
+
+        var minutesAway = frequency - diff % frequency
+        var next = moment().add(minutesAway, 'minutes').format('hh:mm A')
+        console.log('nim', next)
+    } else {
+        minutesAway = nextDepartureMoment.format('HH:mm A')
+        next = Math.abs(diff)
+        console.log(next)
+    }
+
+        
+
+    //var nextDepartureMoment = new moment(parseInt(nextDeparture), "HHmm");
+    var currentMoment = new moment();
+    var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
+    var minutesAway = parseInt(duration.asMinutes());
+    minutesAway = minutesAway + parseInt(frequency);
+    //console.log(minutesAway);
+
+    //newMinutes(minutesAway)
 });
 
 function newMinutes(minutesAway){
-    var nextDepartureMoment = new moment(nextDeparture, "HHmm");
+    var nextDepartureMoment = new moment(parseInt(nextDeparture), "HHmm");
     var currentMoment = new moment();
     var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
     var minutesAway = parseInt(duration.asMinutes());
     //create a while loop that will take the minutesAway and countup until the minutes are no longer negative
     while (minutesAway < 0){
-    // console.log(minutesAway);
-    // minutesAway += frequency//another way of writing the next line
-    minutesAway = minutesAway + parseInt(frequency);
-    console.log(minutesAway);
+        // console.log(minutesAway);
+        // minutesAway += frequency//another way of writing the next line
+        minutesAway = minutesAway + parseInt(frequency);
+        console.log(minutesAway);
     }
 };
 
-function resetTimer(){
-    timerCountdown = RESET_TIMER_COUNTDOWN;
-    updateTimeRemaining(timerCountdown);
-    countdownRunner = setInterval(countdown, ONE_SECOND);
-};
+// function resetTimer(){
+//     timerCountdown = RESET_TIMER_COUNTDOWN;
+//     updateTimeRemaining(timerCountdown);
+//     countdownRunner = setInterval(countdown, ONE_SECOND);
+// };
 //possible to log errors?
 // function(errorObject){
 //     console.log("Errors handled: " + errorObject.code);
