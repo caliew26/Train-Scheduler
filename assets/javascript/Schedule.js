@@ -129,7 +129,7 @@ function updateTableRow(tableRow) {
     $(tableRow).find(".timeAway").text(nextMinutesAway);
     if(nextMinutesAway === 0){
         clearInterval();
-        $(tableRow).find(".first").text(nextDepartureMoment);
+        // $(tableRow).find(".first").text(nextDepartureMoment);
         setInterval("window.location.reload()");
     } else {
         return true;
