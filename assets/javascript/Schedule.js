@@ -42,15 +42,23 @@ function initializeEventHandlers () {
         var frequency = $("#frequency-display").val().trim();
         var nextDeparture = $("#nextDepartureTime-display").val()
 
-
+        if ($("#trainName-display").val().trim() === "" ||
+            $("#destination-display").val().trim()  === "" ||
+            $("#frequency-display").val().trim()  === "" ||
+            $("#nextDepartureTime-display").val()  === "") {
+                alert("All fields must be filled out to add a new train.")
+                // $("#trainInfoSubmit").attr("disabled", true);
+            } else {
+                // $("#trainInfoSubmit").attr("disabled", false);
         //this will push the values into firebase database
-        database.ref().push({
-            trainName: trainName,
-            destination: destination,
-            frequency: frequency,
-            nextDeparture: nextDeparture,
-            dateAdded: firebase.database.ServerValue.TIMESTAMP
-        });
+                database.ref().push({
+                    trainName: trainName,
+                    destination: destination,
+                    frequency: frequency,
+                    nextDeparture: nextDeparture,
+                    dateAdded: firebase.database.ServerValue.TIMESTAMP
+                });
+        };
 
         //clear the form so user can't create the same train over and over
         //NEED TO DISABLE BUTTON SO USER CAN'T UPLOAD A BLANK TRAIN
@@ -58,8 +66,7 @@ function initializeEventHandlers () {
         $("#frequency-display").val("");
         $("#destination-display").val("");
         $("#nextDepartureTime-display").val("");
-        // $("#trainInfoSubmit").attr("disabled", true);
-       
+        // 
     });
 };
 
@@ -82,10 +89,10 @@ database.ref().on("child_added", function(childSnapshot){
     var firstDepartureMoment = new moment((nextDeparture), "HHmm");
     var currentMoment = new moment();
     var duration = moment.duration(firstDepartureMoment.diff(currentMoment));
-    console.log(firstDepartureMoment);
+    // console.log(firstDepartureMoment);
     var minutesAway = parseInt(duration.asMinutes());
-    console.log("above");
-    console.log(minutesAway);
+    // console.log("above");
+    // console.log(minutesAway);
     //create a while loop that will take the minutesAway and countup until the minutes are no longer negative
     while (minutesAway < 0){
         firstDepartureMoment.add(parseInt(frequency), 'm');
@@ -104,8 +111,9 @@ database.ref().on("child_added", function(childSnapshot){
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
-    setInterval (function(){
-    updateTableRow(newRow)},  60000);
+    // setInterval (function(){
+    // updateTableRow(newRow)},  60000);
+    setInterval("window.location.reload()", 60000);
 });
 
 function updateTableRow(tableRow) {
@@ -119,17 +127,27 @@ function updateTableRow(tableRow) {
     var nextMinutesAway = parseInt(duration.asMinutes());
     console.log(nextMinutesAway);
     $(tableRow).find(".timeAway").text(nextMinutesAway);
+    // $(tableRow).find(".first").text(nextDepartureMoment, 'HH:mm');
 }
 
+// countdown until nextMinutesAway is 0; reset setInterval to frequency
 //keep the countdown from going negative 
 //update the departureMoment when the minutes are up
+//searching google - found window.location.reload(), this refreshes the whole page - not idea at all.  I want to figure out how to use the function "updateTaleRow", it works until the counter is down to 0.. then it runs negative
+//setInterval("window.location.reload()", 60000);
 
-//possible to log errors?
-// function(errorObject){
-//     console.log("Errors handled: " + errorObject.code);
-// };
 
-    //DR HELP
+//pulled from TriviaGame - counter countdown
+// function updateTimeRemaining(newTime){
+//     $("#timeLeft").text(newTime);
+// }
+
+// function resetTimer(){
+//     timerCountdown = RESET_TIMER_COUNTDOWN;
+//     updateTimeRemaining(timerCountdown);
+//     countdownRunner = setInterval(countdown, ONE_SECOND);
+// }
+
     // var nextDepartureMoment = moment.unix(nextDeparture);
     // var diff = moment().diff(moment(nextDepartureMoment, 'HH:mm'), 'minutes')
 
