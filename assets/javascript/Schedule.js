@@ -19,7 +19,8 @@ var trainName = "",
     destination = "",
     frequency = "",//in minutes (this is how often the train departs)
     nextDeparture = "",//military time HHmm (this is when the train will depart)
-    minutesAway = ""
+    minutesAway = "",
+    RESET_TIMER_COUNTDOWN = frequency
 
 //getting the DOM loaded/rendered
 $(document).ready(function() {
@@ -86,7 +87,7 @@ database.ref().on("child_added", function(childSnapshot){
     var nextDeparture = childSnapshot.val().nextDeparture;
     // var minutesAway = newMinutes(minutesAway);
 
-    var firstDepartureMoment = new moment((nextDeparture), "HHmm");
+    var firstDepartureMoment = new moment((nextDeparture), "HHmm").subtract(1, 'd');
     var currentMoment = new moment();
     var duration = moment.duration(firstDepartureMoment.diff(currentMoment));
     // console.log(firstDepartureMoment);
@@ -111,9 +112,8 @@ database.ref().on("child_added", function(childSnapshot){
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
-    // setInterval (function(){
-    // updateTableRow(newRow)},  60000);
-    setInterval("window.location.reload()", 60000);
+    setInterval (function(){
+    updateTableRow(newRow)},  60000);
 });
 
 function updateTableRow(tableRow) {
@@ -127,7 +127,13 @@ function updateTableRow(tableRow) {
     var nextMinutesAway = parseInt(duration.asMinutes());
     console.log(nextMinutesAway);
     $(tableRow).find(".timeAway").text(nextMinutesAway);
-    // $(tableRow).find(".first").text(nextDepartureMoment, 'HH:mm');
+    if(nextMinutesAway === 0){
+        clearInterval();
+        $(tableRow).find(".first").text(nextDepartureMoment);
+        setInterval("window.location.reload()");
+    } else {
+        return true;
+    }
 }
 
 // countdown until nextMinutesAway is 0; reset setInterval to frequency
@@ -137,16 +143,6 @@ function updateTableRow(tableRow) {
 //setInterval("window.location.reload()", 60000);
 
 
-//pulled from TriviaGame - counter countdown
-// function updateTimeRemaining(newTime){
-//     $("#timeLeft").text(newTime);
-// }
-
-// function resetTimer(){
-//     timerCountdown = RESET_TIMER_COUNTDOWN;
-//     updateTimeRemaining(timerCountdown);
-//     countdownRunner = setInterval(countdown, ONE_SECOND);
-// }
 
     // var nextDepartureMoment = moment.unix(nextDeparture);
     // var diff = moment().diff(moment(nextDepartureMoment, 'HH:mm'), 'minutes')
