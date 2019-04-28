@@ -24,13 +24,15 @@ var trainName = "",
 //getting the DOM loaded/rendered
 $(document).ready(function() {
     // $("#trainInfoSubmit").attr("disabled", true)
-   // initializeEventHandlers();
-//});
+   initializeEventHandlers();
+});
+
     //submit button -- 
         //will need to be disabled on initial page load
         //once all field are populated then enable submit
         //function initializeEventHandlers(){
         //will need an keyup event listener that will set the button to active when data is input from user
+function initializeEventHandlers () {
     $("#trainInfoSubmit").click(function(){
         event.preventDefault();
         // $("#trainInfoSubmit").attr("disabled", false);
@@ -59,7 +61,7 @@ $(document).ready(function() {
         // $("#trainInfoSubmit").attr("disabled", true);
        
     });
-});
+};
 
 database.ref().on("child_added", function(childSnapshot){
     //console.log(childsnapshot.val());
@@ -94,16 +96,33 @@ database.ref().on("child_added", function(childSnapshot){
 
      //create a new row from the input from the user
      var newRow = $("<tr>").append(
-        $("<td>").text(trainName),
+        $("<td> ").text(trainName),
         $("<td>").text(destination),
         $("<td>").text(frequency),
-        $("<td>").text(firstDepartureMoment.format("HH:mm")),
-        $("<td>").text(minutesAway),
+        $("<td class='first'>").text(firstDepartureMoment.format("HH:mm")),
+        $("<td class='timeAway'>").text(minutesAway),
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
+    setInterval (function(){
+    updateTableRow(newRow)},  60000);
 });
 
+function updateTableRow(tableRow) {
+    var nextDepartureMoment = new moment(($(tableRow).find(".first").text()), "HH:mm");
+    console.log(nextDepartureMoment)
+    console.log($(tableRow).find(".first").text());
+    var currentMoment = new moment();
+    console.log(currentMoment);
+    var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
+    console.log(duration);
+    var nextMinutesAway = parseInt(duration.asMinutes());
+    console.log(nextMinutesAway);
+    $(tableRow).find(".timeAway").text(nextMinutesAway);
+}
+
+//keep the countdown from going negative 
+//update the departureMoment when the minutes are up
 
 //possible to log errors?
 // function(errorObject){
