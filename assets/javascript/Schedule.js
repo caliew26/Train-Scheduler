@@ -106,17 +106,18 @@ database.ref().on("child_added", function(childSnapshot){
      var newRow = $("<tr>").append(
         $("<td> ").text(trainName),
         $("<td>").text(destination),
-        $("<td>").text(frequency),
+        $("<td class='freq'>").text(frequency),
         $("<td class='first'>").text(firstDepartureMoment.format("HH:mm")),
         $("<td class='timeAway'>").text(minutesAway),
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
     setInterval (function(){
-    updateTableRow(newRow)},  60000);
+    updateTableRow(newRow)}, 4000);
 });
 
 function updateTableRow(tableRow) {
+    var nextFreq = parseInt($(tableRow).find(".freq").text());
     var nextDepartureMoment = new moment(($(tableRow).find(".first").text()), "HH:mm");
     console.log(nextDepartureMoment)
     console.log($(tableRow).find(".first").text());
@@ -125,16 +126,16 @@ function updateTableRow(tableRow) {
     var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
     console.log(duration);
     var nextMinutesAway = parseInt(duration.asMinutes());
+    var nextSecondsAway = parseInt(duration.asSeconds());
     console.log(nextMinutesAway);
     $(tableRow).find(".timeAway").text(nextMinutesAway);
-    if(nextMinutesAway === 0){
-        clearInterval();
-        // $(tableRow).find(".first").text(nextDepartureMoment);
-        setInterval("window.location.reload()");
-    } else {
-        return true;
+    if(nextSecondsAway < 0){
+        nextDepartureMoment.add(nextFreq,'m');
+        // setInterval("window.location.reload()");
+        $(tableRow).find(".first").text(nextDepartureMoment.format("HH:mm"));
+        $(tableRow).find(".timeAway").text(nextFreq);
     }
-}
+};
 
 // countdown until nextMinutesAway is 0; reset setInterval to frequency
 //keep the countdown from going negative 
