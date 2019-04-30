@@ -36,6 +36,7 @@ $(document).ready(function() {
         //function initializeEventHandlers(){
         //will need an keyup event listener that will set the button to active when data is input from user
 function initializeEventHandlers () {
+    //onclick of trainInfoSubmit I need to do stuff
     $("#trainInfoSubmit").click(function(){
         event.preventDefault();
         // $("#trainInfoSubmit").attr("disabled", false);
@@ -45,6 +46,7 @@ function initializeEventHandlers () {
         var frequency = $("#frequency-display").val().trim();
         var nextDeparture = $("#nextDepartureTime-display").val()
 
+        //if the fields are blank, I want to stop the user from being able to click submit
         if ($("#trainName-display").val().trim() === "" ||
             $("#destination-display").val().trim()  === "" ||
             $("#frequency-display").val().trim()  === "" ||
@@ -114,39 +116,42 @@ database.ref().on("child_added", function(childSnapshot){
     );
     //add the new row just created onto the table
     $("#trainTable > tbody").append(newRow);
+    //I want to update the "row" in the train table so I need a function that will update the screen every x amount of time
     setInterval (function(){
     updateTableRow(newRow)}, 4000);
 });
 
+//create a row from the table created in the database
 function updateTableRow(tableRow) {
+    //set variable to update the frequency
     var nextFreq = parseInt($(tableRow).find(".freq").text());
+    //set variable getting the firstDepartureMoment and set the response to be understood as HH:mm
     var nextDepartureMoment = new moment(($(tableRow).find(".first").text()), "HH:mm");
     console.log(nextDepartureMoment)
     console.log($(tableRow).find(".first").text());
+    //creating a variable for right now
     var currentMoment = new moment();
     console.log(currentMoment);
+    //create a variable with the difference between the nextDepartureMoment and the current moment
     var duration = moment.duration(nextDepartureMoment.diff(currentMoment));
     console.log(duration);
+    //change the duration into minutes
     var nextMinutesAway = parseInt(duration.asMinutes());
+    //change the minutesaway into seconds
     var nextSecondsAway = parseInt(duration.asSeconds());
     console.log(nextMinutesAway);
+    //update the screen with the minutesaway
     $(tableRow).find(".timeAway").text(nextMinutesAway);
     if(nextSecondsAway < 0){
+        //when the minutesaway is down to zero (zero seconds and minutes) then update the nextDepartureMoment by the amount of frequency
         nextDepartureMoment.add(nextFreq,'m');
-        // setInterval("window.location.reload()");
+        //update the table on the screen with the nextdeparture time
         $(tableRow).find(".first").text(nextDepartureMoment.format("HH:mm"));
         $(tableRow).find(".timeAway").text(nextFreq);
     }
 };
 
-// countdown until nextMinutesAway is 0; reset setInterval to frequency
-//keep the countdown from going negative 
-//update the departureMoment when the minutes are up
-//searching google - found window.location.reload(), this refreshes the whole page - not idea at all.  I want to figure out how to use the function "updateTaleRow", it works until the counter is down to 0.. then it runs negative
-//setInterval("window.location.reload()", 60000);
-
-
-
+//the next section is from DR, I didn't understand it so I kept with what I knew and will revisit the codeblock because i'm sure it's more efficient
     // var nextDepartureMoment = moment.unix(nextDeparture);
     // var diff = moment().diff(moment(nextDepartureMoment, 'HH:mm'), 'minutes')
 
@@ -160,7 +165,7 @@ function updateTableRow(tableRow) {
     //     console.log(next)
     // }
 
-//look at the script tags they are a mess and I don't understand
+
 
 //POSSIBLE STRETCH GOALS:
 
@@ -176,27 +181,3 @@ function updateTableRow(tableRow) {
 //var snd = new Audio("steam-train-whistle-daniel_simon.wav");
 // snd.play();
 // snd.currentTime=0
-
-//next arrival -- will be total minutes
-    //input field
-    //update the arrival time in realtime (screen refreshes every 1 minute, if frequency is 30 minutes, next arrival is the actual arrival time (say at 545pm) that is how many minutes from "now" - that is the countdown)
-//I want to add functionality that will not allow the fields to be blank and the button to be submitted, need all values to activate button
-// function newButtonValid(trainStation){
-//     if (trainStation != ""){
-//         alert("please provide all fields")
-//     } else {
-//         alert("all aboard")
-//     }
-// }
-// var table = $("#trainTable");
-// var row = $("#trainSchedule");
-//     for (let i = 0; i < row.length; i++) {
-//        console.log(table); 
-// }
-
-// if ($("#trainName-display") != "" && $("#destination-display") != "" && $("#frequency-display" != "") && $("#nextDepartureTime-display" != "")) {
-//     $("#trainInfoSubmit").attr("disabled", true);
-// } else {
-//     $("#trainInfoSubmit").attr("disabled", false);
-// }    
-//going to need to update the Next Departure column with nextDeparture + frequency and based off of current time.  The train leaves at 8am and trains depart every "frequency" (x min), update the departure time in realtime, a train that is leaving next; as long as the minutes to departure are positive it will be the "next" departure; when the minutes to departure are less than 0, the next departure time will have the frequency added to it.  ------- CALI THINK ON THIS NEXT
