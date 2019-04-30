@@ -15,6 +15,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 //variables for the columns that I need
+var audio = new Audio("All_aboard.mp3");
 var trainName = "",
     destination = "",
     frequency = "",//in minutes (this is how often the train departs)
@@ -26,6 +27,7 @@ var trainName = "",
 $(document).ready(function() {
     // $("#trainInfoSubmit").attr("disabled", true)
    initializeEventHandlers();
+//    audio.play();
 });
 
     //submit button -- 
